@@ -1,6 +1,8 @@
 ## Calculadora
 from pickletools import optimize
 
+from errorres import DivisionPorCeroError, EntradaInvalidaError
+
 
 # funcion suma
 def add(num1, num2):
@@ -18,7 +20,7 @@ def multiplicacion(num1, num2):
 def division(num1, num2):
     try:
         if (num2 == 0):
-            raise ValueError("No se puede dividir entre cero")
+            raise DivisionPorCeroError()
         return num1 / num2
     except ValueError as e:
         print(f"Error {e}")
@@ -39,32 +41,46 @@ def operaciones(option):
     try:
         if option == 5:
             print("Saliendo de la calculadora...")
-            return False  # ← salimos del bucle principal
-        else:
-            print("Necesito dos números")
+            return False  # salir del bucle principal
+
+        # 🚫 Validar opción antes de pedir números
+        if option not in (1, 2, 3, 4):
+            raise EntradaInvalidaError("Opción no válida")
+
+        print("Necesito dos números")
+        try:
             number1 = float(input("Dame el primer número: "))
             number2 = float(input("Dame el segundo número: "))
+        except ValueError:
+            raise EntradaInvalidaError("Debes introducir valores numéricos")
 
-            if option == 1:
-                print(f"La suma es: {add(number1, number2)}")
-            elif option == 2:
-                print(f"La resta es: {subtract(number1, number2)}")
-            elif option == 3:
-                print(f"La multiplicación es: {multiplicacion(number1, number2)}")
-            elif option == 4:
-                print(f"La división es: {division(number1, number2)}")
-            else:
-                print("La opción no es válida")
-        return True  # continuar el programa
-    except ValueError as e:
-        print(f"Error: entrada no válida {e}")
-    except ZeroDivisionError as e:
-        print("Error: no se puede dividir por cero {e}")
+        # Ejecutar la operación seleccionada
+        if option == 1:
+            print(f"La suma es: {add(number1, number2)}")
+        elif option == 2:
+            print(f"La resta es: {subtract(number1, number2)}")
+        elif option == 3:
+            print(f"La multiplicación es: {multiplicacion(number1, number2)}")
+        elif option == 4:
+            print(f"La división es: {division(number1, number2)}")
+        else:
+            raise EntradaInvalidaError("Opción no válida")
+
+    except DivisionPorCeroError as e:
+        print(f"Error: {e}")
+    except EntradaInvalidaError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+
     return True
 
 
 # Bucle Principal
 while True:
-    opcion = menu()
-    if not operaciones(opcion):
-        break
+    try:
+        opcion = menu()
+        if not operaciones(opcion):
+            break
+    except EntradaInvalidaError as e:
+        print(f"Error: {e}")
