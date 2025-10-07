@@ -1,12 +1,13 @@
-##Excepciones personalizadas
+from ErrorPersonalizado import WithdrawError
+
 
 def withdraw(amount):
     if amount < 0:
-        raise ValueError("No puedes retirar menos de cero")
-    print(f"Tu has retirado ${amount}")
+        raise WithdrawError(amount)
+    print(f"Has retirado ${amount}")
 
 
 try:
     withdraw(-50)
-except ValueError as e:
-    print(f"Error: {e}")
+except WithdrawError as e:
+    print(f"Error: {e.message} (monto: {e.amount})")
