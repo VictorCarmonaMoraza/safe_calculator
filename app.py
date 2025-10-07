@@ -1,6 +1,12 @@
-##Multiples excepciones
+##Excepciones personalizadas
+
+def withdraw(amount):
+    if amount < 0:
+        raise ValueError("No puedes retirar menos de cero")
+    print(f"Tu has retirado ${amount}")
+
+
 try:
-    num = int(input("Dame un numero: "))
-    result = 10 / num
-except (ZeroDivisionError, ValueError):
-    print("Error divsion por cero")
+    withdraw(-50)
+except ValueError as e:
+    print(f"Error: {e}")
